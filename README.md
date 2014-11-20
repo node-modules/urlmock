@@ -36,7 +36,7 @@ Easy load mock data from a specify url.
 ## Installation
 
 ```bash
-$ npm install mockfile
+$ npm install urlmock
 ```
 
 ## URL Mapping Rules
