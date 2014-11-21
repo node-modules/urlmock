@@ -16,12 +16,14 @@
 
 var debug = require('debug')('urlmock');
 var path = require('path');
+var fs = require('fs');
 var urlparse = require('url').parse;
 var extend = require('extend');
 
 module.exports = urlmock;
 module.exports.mapping = mapping;
 module.exports.load = load;
+module.exports.findAllScenes = findAllScenes;
 
 function urlmock(datadir, url) {
   var paths = mapping(datadir, url);
@@ -91,4 +93,38 @@ function load(filepath) {
   }
   debug('load %s got %j', filepath, merged);
   return merged;
+}
+
+function findAllScenes(datadir, url) {
+  var scenes = [];
+  var info = urlparse(url, true);
+  var pathname = info.pathname.replace(/^\/+/g, '');
+  var dir = path.join(datadir, pathname);
+  if (!fs.existsSync(dir)) {
+    dir = null;
+    // try to remove `.ext`, like `/user/foo.htm` => `/user/foo`
+    var ext = path.extname(pathname);
+    // should ignore `/foo.`
+    if (ext && ext.length > 1) {
+      pathname = pathname.substring(0, pathname.lastIndexOf('.'));
+      dir = path.join(datadir, pathname);
+    }
+  }
+
+  if (dir && fs.existsSync(dir)) {
+    scenes = fs.readdirSync(dir).filter(function (name) {
+      if (fs.statSync(path.join(dir, name)).isDirectory()) {
+        return false;
+      }
+
+      var ext = path.extname(name);
+      if (ext === '.js' || ext === '.json') {
+        return true;
+      }
+      return false;
+    }).map(function (name) {
+      return name.substring(0, name.lastIndexOf('.'));
+    });
+  }
+  return scenes;
 }

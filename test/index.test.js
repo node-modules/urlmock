@@ -270,4 +270,26 @@ describe('urlmock', function () {
       });
     });
   });
+
+  describe('findAllScenes()', function () {
+    it('should find out all exists scenes', function () {
+      var data = urlmock.findAllScenes(datadir, '/');
+      assert.deepEqual(data, [ 'admin', 'default', 'fail', 'logined' ]);
+
+      var data = urlmock.findAllScenes(datadir, '/users');
+      assert.deepEqual(data, [ 'other', 'second' ]);
+
+      var data = urlmock.findAllScenes(datadir, '/users.');
+      assert.deepEqual(data, []);
+
+      var data = urlmock.findAllScenes(datadir, '/users.html');
+      assert.deepEqual(data, [ 'other', 'second' ]);
+
+      var data = urlmock.findAllScenes(datadir, '/users/123');
+      assert.deepEqual(data, [ 'one' ]);
+
+      var data = urlmock.findAllScenes(datadir, '/users/123.html');
+      assert.deepEqual(data, [ 'default' ]);
+    });
+  });
 });
