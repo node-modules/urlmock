@@ -25,12 +25,15 @@ module.exports.mapping = mapping;
 module.exports.load = load;
 module.exports.findAllScenes = findAllScenes;
 
-function urlmock(datadir, url) {
+function urlmock(datadir, ctx) {
+  // urlmock(datadir, koa-ctx)
+  // urlmock(datadir, url)
+  var url = typeof ctx === 'string' ? ctx : ctx.url;
   var paths = mapping(datadir, url);
   for (var i = 0; i < paths.length; i++) {
     var filepath = paths[i];
     try {
-      var data = load(filepath);
+      var data = load(filepath, ctx);
       return data;
     } catch (err) {
       if (err.code !== 'MODULE_NOT_FOUND') {
@@ -62,9 +65,13 @@ function mapping(datadir, url) {
   return paths;
 }
 
-function load(filepath) {
+function load(filepath, ctx) {
   var merged = {};
   var data = require(filepath);
+  if (typeof data === 'function') {
+    // module.exports = function load(ctx) {}
+    data = data(ctx);
+  }
   // skip __requires
   for (var key in data) {
     if (key === '__requires') {
@@ -84,7 +91,7 @@ function load(filepath) {
     var requireMerged = {};
     requires.forEach(function (requirepath) {
       requirepath = path.join(path.dirname(filepath), requirepath);
-      var requireData = load(requirepath);
+      var requireData = load(requirepath, ctx);
       extend(true, requireMerged, requireData);
     });
 

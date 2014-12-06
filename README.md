@@ -158,16 +158,16 @@ So `logined_admin.js` will merge all data:
 ## Quick start
 
 ```js
-var mockfile = require('mockfile');
+var urlmock = require('urlmock');
 
-var data = mockfile('/foobar/test/mocks', '/users/1984?__scene=newuser');
+var data = urlmock('/foobar/test/mocks', '/users/1984?__scene=newuser');
 console.log(data);
 // { name: 'fengmk2', age: 18 }
 ```
 
 ## API Reference
 
-### #mockfile(datadir, url)
+### #urlmock(datadir, url)
 
 Get the url mapping mock data.
 
@@ -175,7 +175,20 @@ Get the url mapping mock data.
 - url: current request url
 
 ```js
-var data = mockfile('/foobar/test/mocks', '/users/1984?__scene=newuser');
+var data = urlmock('/foobar/test/mocks', '/users/1984?__scene=newuser');
+console.log(data);
+// { name: 'fengmk2', age: 18 }
+```
+
+### #urlmock(datadir, ctx)
+
+Get the url mapping mock data.
+
+- datadir: store mock data directory path
+- ctx: koa context instance
+
+```js
+var data = urlmock('/foobar/test/mocks', ctx);
 console.log(data);
 // { name: 'fengmk2', age: 18 }
 ```

@@ -189,6 +189,32 @@ describe('urlmock', function () {
       assert.deepEqual(urlmock(datadir, '/?__scene='), urlmock(datadir, '/?__scene=default'));
     });
 
+    it('load data with ctx', function () {
+      assert.deepEqual(urlmock(datadir, {
+        url: '/?__scene=data_with_ctx',
+        query: {
+          foo: 'bar'
+        }
+      }), {
+        query: {
+          foo: 'bar'
+        },
+        url: '/?__scene=data_with_ctx'
+      });
+
+      assert.deepEqual(urlmock(datadir, {
+        url: '/?__scene=data_with_ctx&foo=bar',
+        query: {
+          foo: 'bar'
+        }
+      }), {
+        query: {
+          foo: 'bar'
+        },
+        url: '/?__scene=data_with_ctx&foo=bar'
+      });
+    });
+
     it('`/users?__scene=other` => `/mocks/users/other.js`', function () {
       assert.deepEqual(urlmock(datadir, '/users?__scene=other'), {
         name: 'other'
@@ -274,7 +300,7 @@ describe('urlmock', function () {
   describe('findAllScenes()', function () {
     it('should find out all exists scenes', function () {
       var data = urlmock.findAllScenes(datadir, '/');
-      assert.deepEqual(data, [ 'admin', 'default', 'fail', 'logined' ]);
+      assert.deepEqual(data, [ 'admin', 'data_with_ctx', 'default', 'fail', 'logined' ]);
 
       var data = urlmock.findAllScenes(datadir, '/users');
       assert.deepEqual(data, [ 'other', 'second' ]);
