@@ -1,6 +1,6 @@
 {
   "name": "urlmock",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Easy load mock data from a specify url",
   "main": "index.js",
   "scripts": {
