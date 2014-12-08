@@ -165,6 +165,30 @@ console.log(data);
 // { name: 'fengmk2', age: 18 }
 ```
 
+### use `__name` for scene name
+
+Default scene name is `file name`.
+We can add `__name` special property on mock data to set the scene name.
+
+`default.js` will show scene name is `normal user (default.js)`
+
+```js
+module.exports = {
+  name: 'jack',
+  __name: 'normal user'
+};
+```
+
+`ma.js` will show scene name is `马 yun yun (ma.js)`
+
+```js
+module.exports = {
+  name: 'jack ma',
+  __name: '马 yun yun',
+  __requires: ['./default']
+};
+```
+
 ## API Reference
 
 ### #urlmock(datadir, url)

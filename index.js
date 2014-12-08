@@ -50,6 +50,10 @@ function mapping(datadir, url) {
   var pathname = info.pathname.replace(/^\/+/g, '');
   var scene = (info.query && info.query.__scene || '').trim();
   scene = scene || 'default';
+  var m = / \(([^\)]+)\.(?:js|json)\)$/.exec(scene);
+  if (m) {
+    scene = m[1];
+  }
   var paths = [
     path.join(datadir, pathname, scene + '.js'),
     path.join(datadir, pathname, scene + '.json'),
@@ -72,9 +76,12 @@ function load(filepath, ctx) {
     // module.exports = function load(ctx) {}
     data = data(ctx);
   }
-  // skip __requires
+  // skip __requires, __name
   for (var key in data) {
     if (key === '__requires') {
+      continue;
+    }
+    if (key === '__name') {
       continue;
     }
     merged[key] = data[key];
@@ -119,18 +126,34 @@ function findAllScenes(datadir, url) {
   }
 
   if (dir && fs.existsSync(dir)) {
-    scenes = fs.readdirSync(dir).filter(function (name) {
-      if (fs.statSync(path.join(dir, name)).isDirectory()) {
+    var filepaths = fs.readdirSync(dir).map(function (name) {
+      return path.join(dir, name);
+    }).filter(function (filepath) {
+      if (fs.statSync(filepath).isDirectory()) {
         return false;
       }
 
-      var ext = path.extname(name);
+      var ext = path.extname(filepath);
       if (ext === '.js' || ext === '.json') {
         return true;
       }
       return false;
-    }).map(function (name) {
-      return name.substring(0, name.lastIndexOf('.'));
+    });
+
+    scenes = filepaths.map(function (filepath) {
+      var filename = path.basename(filepath);
+      var defaultName = filename.substring(0, filename.lastIndexOf('.'));
+      var data;
+      try {
+        data = require(filepath);
+      } catch (_) {
+        return defaultName;
+      }
+
+      if (!data.__name) {
+        return defaultName;
+      }
+      return data.__name + ' (' + filename + ')';
     });
   }
   return scenes;

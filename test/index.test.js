@@ -295,6 +295,27 @@ describe('urlmock', function () {
         return true;
       });
     });
+
+    it('`/profile?__scene=normal user (default.js)` => `/mocks/profile/default.js`', function () {
+      assert.deepEqual(urlmock(datadir, '/profile?__scene=normal user (default.js)'), {
+        name: 'jack',
+      });
+    });
+
+    it('`/profile?__scene=lucy` => `/mocks/profile/lucy.js`', function () {
+      assert.deepEqual(urlmock(datadir, '/profile?__scene=lucy'), {
+        name: 'lucy luo',
+      });
+    });
+
+    it('`/profile?__scene=马 yun yun (ma.js)` => `/mocks/profile/ma.js`', function () {
+      assert.deepEqual(urlmock(datadir, '/profile?__scene=' + encodeURIComponent('马 yun yun (ma.js)')), {
+        name: 'jack ma',
+      });
+
+      assert.deepEqual(urlmock(datadir, '/profile?__scene=' + encodeURIComponent('马 yun yun (ma.js)')),
+        urlmock(datadir, '/profile?__scene=ma'));
+    });
   });
 
   describe('findAllScenes()', function () {
@@ -316,6 +337,11 @@ describe('urlmock', function () {
 
       var data = urlmock.findAllScenes(datadir, '/users/123.html');
       assert.deepEqual(data, [ 'default' ]);
+    });
+
+    it('should support `__name` in mock data file', function () {
+      var data = urlmock.findAllScenes(datadir, '/profile');
+      assert.deepEqual(data, ['normal user (default.js)', 'lucy', '马 yun yun (ma.js)']);
     });
   });
 });
