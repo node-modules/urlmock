@@ -105,6 +105,16 @@ describe('urlmock', function () {
       });
     });
 
+    it('should support array json', function () {
+      var data = urlmock.load(path.join(datadir, 'array.json'));
+      assert(Array.isArray(data), 'data should be an Array');
+      assert.deepEqual(data, [1, 2, 3]);
+
+      data = urlmock.load(path.join(datadir, 'jsarray.js'));
+      assert(Array.isArray(data), 'data should be an Array');
+      assert.deepEqual(data, [4, 5]);
+    });
+
     it('should load data contains __requires: [r1, r2, ...]', function () {
       var data = urlmock.load(path.join(datadir, 'admin.js'));
       assert.deepEqual(data, {
@@ -321,7 +331,7 @@ describe('urlmock', function () {
   describe('findAllScenes()', function () {
     it('should find out all exists scenes', function () {
       var data = urlmock.findAllScenes(datadir, '/');
-      assert.deepEqual(data, [ 'admin', 'data_with_ctx', 'default', 'fail', 'logined' ]);
+      assert.deepEqual(data, [ 'admin', 'array', 'data_with_ctx', 'default', 'fail', 'jsarray', 'logined' ]);
 
       var data = urlmock.findAllScenes(datadir, '/users');
       assert.deepEqual(data, [ 'other', 'second' ]);

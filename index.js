@@ -76,6 +76,11 @@ function load(filepath, ctx) {
     // module.exports = function load(ctx) {}
     data = data(ctx);
   }
+
+  if (Array.isArray(data)) {
+    return data;
+  }
+
   // skip __requires, __name
   for (var key in data) {
     if (key === '__requires') {
