@@ -72,6 +72,12 @@ describe('urlmock', function () {
         path.join(datadir, 'foo', 'default.json'),
       ]);
 
+      var paths = urlmock.mapping(datadir, '/foo?__scene=default.js');
+      assert.deepEqual(paths, [
+        path.join(datadir, 'foo', 'default.js'),
+        path.join(datadir, 'foo', 'default.json'),
+      ]);
+
       var paths = urlmock.mapping(datadir, '/foo?__scene=%20%20%20');
       assert.deepEqual(paths, [
         path.join(datadir, 'foo', 'default.js'),

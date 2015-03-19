@@ -50,6 +50,7 @@ function mapping(datadir, url) {
   var pathname = info.pathname.replace(/^\/+/g, '');
   var scene = (info.query && info.query.__scene || '').trim();
   scene = scene || 'default';
+  scene = scene.replace(/\.(js|json)$/, '');
   var m = / \(([^\)]+)\.(?:js|json)\)$/.exec(scene);
   if (m) {
     scene = m[1];
