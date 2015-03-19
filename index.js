@@ -115,7 +115,7 @@ function load(filepath, ctx) {
 }
 
 function findAllScenes(datadir, url) {
-  var scenes = [];
+  var scenes = {};
   var info = urlparse(url, true);
   var pathname = info.pathname.replace(/^\/+/g, '');
   var dir = path.join(datadir, pathname);
@@ -145,20 +145,19 @@ function findAllScenes(datadir, url) {
       return false;
     });
 
-    scenes = filepaths.map(function (filepath) {
+    filepaths.map(function (filepath) {
       var filename = path.basename(filepath);
-      var defaultName = filename.substring(0, filename.lastIndexOf('.'));
-      var data;
-      try {
-        data = require(filepath);
-      } catch (_) {
-        return defaultName;
-      }
+      // use filename as default name
+      var name = filename.substring(0, filename.lastIndexOf('.'));
 
-      if (!data.__name) {
-        return defaultName;
-      }
-      return data.__name + ' (' + filename + ')';
+      try {
+        var data = require(filepath);
+        if (data && data.__name) {
+          name = data.__name;
+        }
+      } catch (_) {}
+
+      scenes[filename] = name;
     });
   }
   return scenes;

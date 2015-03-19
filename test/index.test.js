@@ -331,27 +331,49 @@ describe('urlmock', function () {
   describe('findAllScenes()', function () {
     it('should find out all exists scenes', function () {
       var data = urlmock.findAllScenes(datadir, '/');
-      assert.deepEqual(data, [ 'admin', 'array', 'data_with_ctx', 'default', 'fail', 'jsarray', 'logined' ]);
+      assert.deepEqual(data, {
+        'admin.js': 'admin',
+        'array.json': 'array',
+        'data_with_ctx.js': 'data_with_ctx',
+        'default.js': 'default',
+        'fail.js': 'fail',
+        'jsarray.js': 'jsarray',
+        'logined.js': 'logined'
+      });
 
       var data = urlmock.findAllScenes(datadir, '/users');
-      assert.deepEqual(data, [ 'other', 'second' ]);
+      assert.deepEqual(data, {
+        'other.js': 'other',
+        'second.js': 'second'
+      });
 
       var data = urlmock.findAllScenes(datadir, '/users.');
-      assert.deepEqual(data, []);
+      assert.deepEqual(data, {});
 
       var data = urlmock.findAllScenes(datadir, '/users.html');
-      assert.deepEqual(data, [ 'other', 'second' ]);
+      assert.deepEqual(data, {
+        'other.js': 'other',
+        'second.js': 'second'
+      });
 
       var data = urlmock.findAllScenes(datadir, '/users/123');
-      assert.deepEqual(data, [ 'one' ]);
+      assert.deepEqual(data, {
+        'one.js': 'one'
+      });
 
       var data = urlmock.findAllScenes(datadir, '/users/123.html');
-      assert.deepEqual(data, [ 'default' ]);
+      assert.deepEqual(data, {
+        'default.js': 'default'
+      });
     });
 
     it('should support `__name` in mock data file', function () {
       var data = urlmock.findAllScenes(datadir, '/profile');
-      assert.deepEqual(data, ['normal user (default.js)', 'lucy', '马 yun yun (ma.js)']);
+      assert.deepEqual(data, {
+        'default.js': 'normal user',
+        'lucy.js': 'lucy',
+        'ma.js': '马 yun yun'
+      });
     });
   });
 });
