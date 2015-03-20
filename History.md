@@ -1,4 +1,9 @@
 
+2.0.0 / 2015-03-20
+==================
+
+ * Change scenes from array to object, then could get the filename
+
 1.3.1 / 2014-12-24
 ==================
 
